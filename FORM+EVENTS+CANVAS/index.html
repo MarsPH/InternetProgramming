@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Form Example</title>
+</head>
+<body>
+    <fieldset>
+        <legend>Personal Information</legend>
+
+        <label for="fname">First Name</label>
+        <input type="text" id="fname"><br><br>
+
+        <label for="lname">Last Name</label>
+        <input type="text" id="lname"><br><br>
+
+        <label for="time">Select your time</label>
+        <select name="timeSelect" id="time">
+            <!-- we should offer options -->
+            <option value="morning">Morning</option>
+            <option value="afternoon">Afternoon</option>
+            <option value="evening">Evening</option>
+        </select><br><br>
+
+        <!-- Create area put comments or message -->
+        <label for="message">Comments</label><br>
+        <textarea name="messageBox" id="message">Write your message here</textarea><br><br>
+        <input type="submit" id="submit" name="submit">
+
+    </fieldset>
+
+    <fieldset>
+       <legend>Webinar Information</legend>
+    <button type="button" onclick="alert('This form is empty!')">Click Me</button>
+
+    <!-- dataList -->
+    <label for="list"></label>
+    <input type="list" list="programming" name="programming">
+    <!-- Do not forget the id SelectElementById() -->
+
+    <datalist id="programming">
+        <option value="Java">Java</option>
+        <option value="AI">AI</option>
+        <option value="Python"></option>
+        <option value="Android"></option>
+    </datalist>
+    <br><br>
+
+<label for="username">UserName</label>
+<input type="text" id="user">
+<1abel for="pwd">Password</label>
+
+<input type="password" id="pwd" name="pwd">
+
+<!--The characters in a password field are masked shown as circl --><br><br>
+
+<label for="favColor">Select your favotite color</label>
+
+<input type="color" id="favColor" name="favColor">
+
+<br><br>
+
+<label for="birthday">Birthdayz</label>
+
+<!--show the date -->
+
+<input type="date" id="birthday" name="birthday" min="1910—01-02" max="2030-01-01">
+<input type="datetime-local" id="birthday" name="birthday">
+<br><br>
+
+<label for="myFile">Upload your file</label>
+
+<input type="file" id="myFile" name="myFile">
+
+<br><br>
+
+<label for="email">Emailz</label>
+
+<input type="email" name="email" placeholder="ex@example.com">
+<br><br>
+
+<label for="volume">volume</label>
+<input type="range" id="volum" name="volum" min="0" max="106">
+<br><br>
+<label for="quantity">Quantity</label>
+
+<feildset>
+    </fieldset>
+</body>
+</html>

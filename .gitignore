@@ -1,0 +1,104 @@
+# ------------------------------
+# OS / Editor files
+# ------------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# VSCode / JetBrains IDE
+.vscode/
+.idea/
+
+# ------------------------------
+# Node / JS / Web projects
+# ------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+pnpm-lock.yaml
+.vite/
+dist/
+build/
+.cache/
+coverage/
+*.log
+
+# Three.js / WebGL build artifacts
+*.glb
+*.gltf
+*.fbx
+*.obj
+*.mtl
+*.bin
+*.dae
+*.3ds
+*.blend1
+*.blend
+*.unity
+
+# ------------------------------
+# C++ / CMake / Unreal / Unity
+# ------------------------------
+*.exe
+*.out
+*.obj
+*.o
+*.so
+*.a
+*.dll
+*.lib
+*.pdb
+*.idb
+*.mod
+*.exp
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.opendb
+
+# Build directories
+build/
+[Bb]in/
+[Dd]ebug*/
+[Rr]elease*/
+x64/
+x86/
+[Cc]MakeFiles/
+CMakeCache.txt
+Makefile
+CMakeScripts/
+Testing/
+
+# ------------------------------
+# Archives / Temp
+# ------------------------------
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# ------------------------------
+# HTML / CSS
+# ------------------------------
+*.min.css.map
+*.min.js.map
+
+# ------------------------------
+# Python (in case of scripting)
+# ------------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pytest_cache/
+*.coverage
+.coverage.*

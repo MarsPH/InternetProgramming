@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bootstrap Containers</title>
+  
+  <!-- Bootstrap CSS -->
+  <link 
+    rel="stylesheet" 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+  <!-- Container (fixed width, responsive) -->
+  <div class="container">
+    <h1>Hello Bootstrap</h1>
+    <p>I use <code>.container</code> class: provides a responsive fixed-width container</p>
+  </div>
+
+  <!-- Container-fluid (full width) -->
+  <div class="container-fluid bg-light mt-3">
+    <h1>Hello Bootstrap</h1>
+    <p>I use <code>.container-fluid</code> class: provides a responsive full-width container</p>
+  </div>
+
+  <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Jumbotron inside container with blue background -->
+<div class="container mt-4">
+  <div class="jumbotron bg-primary text-white">
+    <h1 class="display-4">Welcome to Bootstrap</h1>
+    <p class="lead">This is a Jumbotron inside a container with a blue background.</p>
+    <hr class="my-4">
+    <p>Bootstrap helps you build responsive websites quickly.</p>
+    <a class="btn btn-light btn-lg" href="#" role="button">Learn more</a>
+  </div>
+</div>
+
+</body>
+</html>

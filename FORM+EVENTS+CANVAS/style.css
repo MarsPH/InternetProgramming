@@ -1,0 +1,28 @@
+textarea{
+    width: 200px;
+    height: 200px;
+}
+
+legend{
+    color:blue;
+    font-size: 30px;
+    margin-top: 30px;
+    margin-bottom:30px;
+}
+
+fieldset{
+    width:350px;
+    height: 700px;
+    float: left; 
+    margin-left: 10;
+}
+
+canvas{
+    border: 2px solid black;
+    margin: 20px auto;
+
+}
+
+h2{
+    text-align: center;
+}
