@@ -22,11 +22,11 @@
         <a class="navbar-brand navbrand-style" href="#">MyNavBar</a>
         <!--Search Form-->
         <form class="form-inline my-2 my-lg-0 ml-auto">
-            <input class="form-control mr-sm-2" type="search" placeholder="search" arai-label="Search">
+            <input class="form-control " type="search" placeholder="search" arai-label="Search">
             <button class="btn btn-outline-light my-2 my-sm-9" type="submit">Search</button>
         </form>
         <!-- Show the menu -->
-        <ul class="navbar-nav d-flex flex-row me-1" style="margin-left: auto; font-size : 15px; font-weight: bold;">
+        <ul class="navbar-nav flex-row me-1" style="margin-left: auto ; font-size : 15px; font-weight: bold;">
             <li class="nav-item me-3 m-3-lg-0">
                 <a class="nav-link" href="#">Contact <i class="fa-regular fa-paper-plane"></i></a>
             </li>
@@ -34,24 +34,25 @@
                 <a class="nav-link" href="#">About us <i class="fa-solid fa-user"></i></a>
             </li>
             <li class="nav-item me-3 m-3-lg-0">
-                <a class="nav-link" href="#">Portfolio <i class="fa-regular fa-game-console-handheld"></i></a>
+                <a class="nav-link" href="#">Portfolio <i class="fa-solid fa-gamepad"></i></a>
             </li>
 
-            <li clas="nav-item dropdown">
+            <li class="nav-item dropdown">
                 <!--What happen if I click on menu, I should trigger, open the dropdown menu-->
                 <!--in html toggle open or close the event-->
-                <a clas="new-link dropdown-toggle text-white" href="#" id="navbarDropDown" data-toggle="dropdown"
+                <a class="new-link dropdown-toggle text-white" href="#" id="navbarDropDown" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                     Menu
                 </a>
                 <!--we should add item to dropdown-->
                 <!--copy paste the id innside the ari-labelledby I want to let dropdown toggle knows what is the-->
-                <div class="dropdown-menu" aria-labelledby="navbarDropDown">
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropDown">
                     <a class="dropdown-item" href="#">Profile</a>
                     <a class="dropdown-item" href="#">Setting</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">LogOut</a>
                 </div>
+            </li>
 
         </ul>
 
