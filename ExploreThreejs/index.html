@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Three.js Setup</title>
+  <!-- Import Three.js library from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+</head>
+<body>
+  <!-- All JavaScript goes inside <script> -->
+  <script>
+    // Step 1. Create a Scene
+    // The scene is like a container where we put objects, lights, and cameras.
+    const scene = new THREE.Scene();
+
+    // Step 2. Create a Camera
+    // PerspectiveCamera(fov, aspect, near, far)
+    // - fov (field of view): angle of view (typical range 30–120)
+    // - aspect: usually window.innerWidth / window.innerHeight
+    // - near: closest distance the camera can see
+    // - far: farthest distance the camera can see
+    const camera = new THREE.PerspectiveCamera(
+      75,                                   // Field of view (degrees)
+      window.innerWidth / window.innerHeight, // Aspect ratio
+      0.1,                                  // Near clipping plane
+      1000                                  // Far clipping plane
+    );
+
+    camera.position.z = 5; // Position camera back from origin
+
+    // Step 3. Render the Scene
+    // The renderer will display the scene through the camera onto the webpage.
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Finally: Render the scene with the camera
+
+     // 4. Create a Cube (Geometry + Material → Mesh)
+    const geometry = new THREE.BoxGeometry(); // Cube shape
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Green, no lighting
+    const cube = new THREE.Mesh(geometry, material); // Combine shape + color
+    scene.add(cube); // Add cube to scene
+
+    // 5. Animation Loop
+    function animate() {
+      requestAnimationFrame(animate); // Schedule the next frame
+
+      // Update cube properties (rotation here)
+      cube.rotation.x += 0.01; 
+      cube.rotation.y += 0.01;
+
+      // Render scene through the camera
+      renderer.render(scene, camera);
+    }
+
+    // 6. Start the animation
+    animate();
+
+    
+  </script>
+</body>
+</html>
