@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Details - MovieHub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">MovieHub</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="index.html#featured-movies">Top Rated</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Reviews
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="https://www.imdb.com/" target="_blank">IMDB</a></li>
+            <li><a class="dropdown-item" href="https://www.rottentomatoes.com/" target="_blank">Rotten Tomatoes</a></li>
+            <li><a class="dropdown-item" href="https://www.metacritic.com/" target="_blank">Metacritic</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Movie Details Section -->
+<div class="container mt-5 pt-5">
+  <div id="movie-details" class="row">
+    <!-- Content will be loaded here by JS -->
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const movies = {
+    inception: {
+      title: "Inception",
+      poster: "images/InceptionCard.jpg",
+      description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+      year: 2010,
+      director: "Christopher Nolan",
+      rating: "8.8/10"
+    },
+    matrix: {
+      title: "The Matrix",
+      poster: "images/matrixCard.jpg",
+      description: "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
+      year: 1999,
+      director: "Lana Wachowski, Lilly Wachowski",
+      rating: "8.7/10"
+    },
+    interstellar: {
+      title: "Interstellar",
+      poster: "images/InterstellarCard2.jpg",
+      description: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+      year: 2014,
+      director: "Christopher Nolan",
+      rating: "8.7/10"
+    }
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const movieKey = urlParams.get('movie');
+  const movie = movies[movieKey];
+
+  if (movie) {
+    document.getElementById('movie-details').innerHTML = `
+      <div class="col-md-4">
+        <img src="${movie.poster}" alt="${movie.title} Poster" class="img-fluid rounded" style="height: 500px; object-fit: cover;">
+      </div>
+      <div class="col-md-8">
+        <h1>${movie.title}</h1>
+        <p class="lead">${movie.description}</p>
+        <ul class="list-group">
+          <li class="list-group-item"><strong>Release Year:</strong> ${movie.year}</li>
+          <li class="list-group-item"><strong>Director:</strong> ${movie.director}</li>
+          <li class="list-group-item"><strong>IMDB Rating:</strong> ${movie.rating}</li>
+        </ul>
+        <a href="index.html" class="btn btn-primary mt-3">Back to Home</a>
+      </div>
+    `;
+  } else {
+    document.getElementById('movie-details').innerHTML = '<p>Movie not found.</p>';
+  }
+</script>
+</body>
+</html>
