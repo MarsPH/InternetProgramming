@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiny Runner</title>
+</head>
+<body>
+  <div id="play">
+    Score: <span id="score">0</span> — ←/→ to move
+  </div>
+
+  <script type="module">
+    // Import THREE
+    import * as THREE from "three";
+
+    // Set up scene
+    const scene = new THREE.Scene();
+
+    // Set up camera
+    const camera = new THREE.PerspectiveCamera(
+      60, 
+      window.innerWidth / window.innerHeight, 
+      0.1, 
+      200
+    );
+    camera.position.set(0, 4, 10);
+    camera.lookAt(0, 0, 0); // start point of camera
+
+    // Set up renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    //ground line 
+    const ground = new THREE.PlaneGeometry(8,60);
+    const material = new THREE.MeshBasicMaterial({color: 0x162033});
+    const mat = new THREE.Mesh(ground, material);
+
+    const matt = new THREE.Mesh(
+        new THREE.PlaneGeometry(8,60),
+        new THREE.MeshBasicMaterial({color: 0x162033}),
+
+    );
+
+    matt.rotation.x = -Math.PI/2;
+    matt.position.z = -25;
+    scene.add(matt);
+
+    const player = new THREE.Mesh(
+        new THREE.BoxGeomertry(1,1,1),
+        new THREE.MeshBasicMaterial({color: 0x10b981})
+    );
+
+    player.position.set(0,0,5,0);
+
+
+    // Render loop
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>
