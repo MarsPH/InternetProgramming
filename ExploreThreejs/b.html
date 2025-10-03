@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Three.js Physics Simulation</title>
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js';
+    import * as CANNON from 'https://unpkg.com/cannon-es@0.20.0/dist/cannon-es.js';
+
+    // Scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    camera.position.z = 5;
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Lighting
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(10, 10, 5);
+    scene.add(light);
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    scene.add(ambientLight);
+
+    // Create torso (abstract cylinder for context)
+    const torsoGeometry = new THREE.CylinderGeometry(0.5, 0.8, 3, 8);
+    const torsoMaterial = new THREE.MeshLambertMaterial({ color: 0xadd8e6, wireframe: true, opacity: 0.3, transparent: true });
+    const torso = new THREE.Mesh(torsoGeometry, torsoMaterial);
+    torso.position.set(0, 1.5, 0);
+    scene.add(torso);
+
+    // Outer breast shape (unified visual)
+    const outerGeometry = new THREE.SphereGeometry(1.2, 16, 16);
+    const outerMaterial = new THREE.MeshLambertMaterial({ color: 0xff69b4, wireframe: true, opacity: 0.2, transparent: true });
+    const leftOuter = new THREE.Mesh(outerGeometry, outerMaterial);
+    leftOuter.position.set(-1, 2, 0);
+    scene.add(leftOuter);
+    const rightOuter = new THREE.Mesh(outerGeometry, outerMaterial);
+    rightOuter.position.set(1, 2, 0);
+    scene.add(rightOuter);
+
+    // Internal spheres for physics (20 per breast for super detail, hemisphere-like)
+    const internalGeometry = new THREE.SphereGeometry(0.12, 8, 8);
+    const internalMaterial = new THREE.MeshLambertMaterial({ color: 0xff1493, wireframe: true });
+
+    // Left breast internals
+    const leftSpheres = [];
+    const leftPositions = [];
+    const numSpheres = 20;
+    const radius = 0.8;
+    const centerX = -1;
+    const centerY = 2;
+    const centerZ = 0;
+    for (let i = 0; i < numSpheres; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1) * 0.7; // Bias to front (phi < PI/2)
+      const x = centerX + radius * Math.sin(phi) * Math.cos(theta);
+      const y = centerY + radius * Math.sin(phi) * Math.sin(theta) * 0.5; // Flatten y
+      const z = centerZ + radius * Math.cos(phi) * 0.8; // Protrude z
+      leftPositions.push(new CANNON.Vec3(x, y, z));
+    }
+    for (let i = 0; i < numSpheres; i++) {
+      const sphere = new THREE.Mesh(internalGeometry, internalMaterial);
+      scene.add(sphere);
+      leftSpheres.push(sphere);
+    }
+
+    // Right breast internals
+    const rightSpheres = [];
+    const rightPositions = leftPositions.map(pos => new CANNON.Vec3(pos.x + 2, pos.y, pos.z));
+    for (let i = 0; i < numSpheres; i++) {
+      const sphere = new THREE.Mesh(internalGeometry, internalMaterial);
+      scene.add(sphere);
+      rightSpheres.push(sphere);
+    }
+
+    // Physics world
+    const world = new CANNON.World();
+    world.gravity.set(0, -1.5, 0); // Minimal gravity
+    world.broadphase = new CANNON.NaiveBroadphase();
+    world.defaultContactMaterial.friction = 0.02;
+    world.defaultContactMaterial.restitution = 0.9;
+    world.solver.iterations = 40; // Higher for more spheres
+
+    // Torso body (kinematic)
+    const torsoShape = new CANNON.Cylinder(0.5, 0.8, 3, 8);
+    const torsoBody = new CANNON.Body({ mass: 0 });
+    torsoBody.addShape(torsoShape);
+    torsoBody.position.set(0, 1.5, 0);
+    world.addBody(torsoBody);
+
+    // Small sphere shape
+    const smallSphereShape = new CANNON.Sphere(0.12);
+
+    // Left bodies
+    const leftBodies = [];
+    for (let i = 0; i < numSpheres; i++) {
+      const body = new CANNON.Body({ mass: 0.025 });
+      body.addShape(smallSphereShape);
+      body.position.copy(leftPositions[i]);
+      world.addBody(body);
+      leftBodies.push(body);
+    }
+
+    // Right bodies
+    const rightBodies = [];
+    for (let i = 0; i < numSpheres; i++) {
+      const body = new CANNON.Body({ mass: 0.025 });
+      body.addShape(smallSphereShape);
+      body.position.copy(rightPositions[i]);
+      world.addBody(body);
+      rightBodies.push(body);
+    }
+
+    // Internal constraints (connect close pairs)
+    function addInternalConstraints(bodies, positions) {
+      for (let i = 0; i < bodies.length; i++) {
+        for (let j = i + 1; j < bodies.length; j++) {
+          const dist = positions[i].distanceTo(positions[j]);
+          if (dist < 0.6) { // Tighter connections
+            const constraint = new CANNON.DistanceConstraint(bodies[i], bodies[j], dist, 80); // Slightly stiffer
+            world.addConstraint(constraint);
+          }
+        }
+      }
+    }
+    addInternalConstraints(leftBodies, leftPositions);
+    addInternalConstraints(rightBodies, rightPositions);
+
+    // Attachment: Connect multiple back spheres to torso for stability
+    // Find back spheres (higher x for left, lower x for right)
+    const leftBackIndices = [];
+    leftPositions.forEach((pos, idx) => {
+      if (pos.x > -0.8) { // Closer to torso
+        leftBackIndices.push(idx);
+      }
+    });
+    leftBackIndices.slice(0, 3).forEach(idx => { // Take first 3
+      const pivotTorso = new CANNON.Vec3(-0.4, 0.5, 0);
+      const pivotSphere = new CANNON.Vec3(0, 0, 0);
+      const attach = new CANNON.PointToPointConstraint(torsoBody, pivotTorso, leftBodies[idx], pivotSphere, 250);
+      world.addConstraint(attach);
+    });
+    const rightBackIndices = [];
+    rightPositions.forEach((pos, idx) => {
+      if (pos.x < 1.2) { // Closer to torso
+        rightBackIndices.push(idx);
+      }
+    });
+    rightBackIndices.slice(0, 3).forEach(idx => {
+      const pivotTorso = new CANNON.Vec3(0.4, 0.5, 0);
+      const pivotSphere = new CANNON.Vec3(0, 0, 0);
+      const attach = new CANNON.PointToPointConstraint(torsoBody, pivotTorso, rightBodies[idx], pivotSphere, 250);
+      world.addConstraint(attach);
+    });
+
+    // Sync function
+    function updateMeshes() {
+      torso.position.copy(torsoBody.position);
+      torso.quaternion.copy(torsoBody.quaternion);
+
+      // Left internals
+      for (let i = 0; i < numSpheres; i++) {
+        leftSpheres[i].position.set(leftBodies[i].position.x, leftBodies[i].position.y, leftBodies[i].position.z);
+        leftSpheres[i].quaternion.copy(leftBodies[i].quaternion);
+      }
+      // Update outer to average of cluster
+      let avgX = 0, avgY = 0, avgZ = 0;
+      leftBodies.forEach(body => {
+        avgX += body.position.x;
+        avgY += body.position.y;
+        avgZ += body.position.z;
+      });
+      leftOuter.position.set(avgX / numSpheres, avgY / numSpheres, avgZ / numSpheres);
+
+      // Right
+      for (let i = 0; i < numSpheres; i++) {
+        rightSpheres[i].position.set(rightBodies[i].position.x, rightBodies[i].position.y, rightBodies[i].position.z);
+        rightSpheres[i].quaternion.copy(rightBodies[i].quaternion);
+      }
+      let avgXR = 0, avgYR = 0, avgZR = 0;
+      rightBodies.forEach(body => {
+        avgXR += body.position.x;
+        avgYR += body.position.y;
+        avgZR += body.position.z;
+      });
+      rightOuter.position.set(avgXR / numSpheres, avgYR / numSpheres, avgZR / numSpheres);
+    }
+
+    // Animation loop
+    let time = 0;
+    function animate() {
+      requestAnimationFrame(animate);
+      time += 0.016;
+
+      // Enhanced torso animation: stronger bounce + sway + forward/back
+      const bounce = Math.sin(time * 6) * 0.4;
+      torsoBody.position.y = 1.5 + bounce;
+      torsoBody.velocity.y = Math.cos(time * 6) * 2.4;
+
+      torsoBody.position.x = Math.sin(time * 3) * 0.2;
+      torsoBody.position.z = Math.sin(time * 4) * 0.1; // Forward/back sway
+      torsoBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.sin(time * 2.5) * 0.15); // Twist
+
+      // Periodic random jiggle to cluster centers
+      if (time % 1.5 < 0.05) {
+        const jiggleForce = (Math.random() - 0.5) * 3;
+        leftBodies[0].velocity.y += jiggleForce * 0.5; // Trigger from front
+        rightBodies[0].velocity.y += jiggleForce * 0.5;
+      }
+
+      world.step(1 / 60);
+
+      // Reduced damping for longer jiggle
+      [...leftBodies, ...rightBodies].forEach(body => {
+        body.velocity.scale(0.92, body.velocity);
+      });
+
+      updateMeshes();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Adjust camera for better view
+    camera.position.set(0, 1.5, 6);
+    camera.lookAt(0, 1.5, 0);
+  </script>
+</body>
+</html>
